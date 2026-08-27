@@ -1,31 +1,61 @@
 import { Link } from 'react-router-dom';
+import Logo from './Logo';
+import ContactInfo from './ContactInfo';
+import OfficeMap from './OfficeMap';
+
+const quickLinks = [
+  { to: '/', label: 'Home' },
+  { to: '/services', label: 'Services' },
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
+];
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-blue-900 text-blue-100">
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row justify-between gap-6">
+    <footer className="bg-ink text-mist">
+      <div className="container-page py-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
         {/* ── Firm blurb ── */}
         <div>
-          {/* PLACEHOLDER: Update firm name and tagline */}
-          <p className="text-white font-bold text-lg">Adam&amp;Co Accounting</p>
-          <p className="text-sm mt-1">Trusted financial guidance for your business.</p>
+          <div className="flex items-center gap-2.5">
+            <Logo className="shrink-0 text-sand" size={26} />
+            <p className="text-sand font-medium text-lg">Adam&amp;Co Accounting</p>
+          </div>
+          <p className="text-sm mt-2 text-mist leading-relaxed">
+            Trusted financial guidance for small businesses and individuals in
+            Port Moody and the Tri-Cities.
+          </p>
         </div>
 
         {/* ── Quick links ── */}
         <nav aria-label="Footer navigation">
-          <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-            <li><Link to="/services" className="hover:text-white transition-colors">Services</Link></li>
-            <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
-            <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-            <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+          <p className="text-sand font-medium text-sm mb-3">Explore</p>
+          <ul className="space-y-2 text-sm">
+            {quickLinks.map(link => (
+              <li key={link.to}>
+                <Link to={link.to} className="text-mist hover:text-sand transition-colors">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
+
+        {/* ── Contact details ── */}
+        <div>
+          <p className="text-sand font-medium text-sm mb-3">Get in touch</p>
+          <ContactInfo variant="footer" />
+        </div>
+
+        {/* ── Office map ── */}
+        <div>
+          <p className="text-sand font-medium text-sm mb-3">Visit us</p>
+          <OfficeMap className="h-40" />
+        </div>
       </div>
 
-      <div className="border-t border-blue-700 text-center text-xs text-blue-300 py-3">
+      <div className="border-t border-hairline-dark text-center text-xs text-mist py-4">
         &copy; {year} Adam&amp;Co Accounting. All rights reserved.
       </div>
     </footer>

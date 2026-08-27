@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-sand text-stone font-sans antialiased;
+    font-weight: 400;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif text-ink tracking-tight;
+    font-weight: 400;
+  }
+}
+
+@layer components {
+  /* Buttons — reused on every page instead of repeating the utility soup.
+     Clay is the only interactive colour; flat, no shadow. */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3
+           font-medium transition-colors focus:outline-none focus-visible:ring-2
+           focus-visible:ring-clay;
+  }
+  .btn-primary {
+    @apply btn bg-clay text-paper hover:bg-clay-light;
+  }
+  .btn-secondary {
+    @apply btn bg-paper text-ink border border-hairline hover:border-clay hover:text-clay;
+  }
+  .btn-on-dark {
+    @apply btn bg-paper text-ink hover:bg-mist;
+  }
+
+  /* Layout helpers */
+  .container-page {
+    @apply max-w-6xl mx-auto px-4 sm:px-6;
+  }
+  .section {
+    @apply py-16 sm:py-20;
+  }
+
+  /* Card surface — flat, hairline border, no shadow */
+  .card {
+    @apply bg-paper border border-hairline rounded-2xl;
+  }
+
+  /* Eyebrow label above section headings.
+     Stays neutral on light — clay is reserved for interactive elements.
+     On dark surfaces it may use text-clay-light (small accent text). */
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.18em] text-stone;
+  }
+}

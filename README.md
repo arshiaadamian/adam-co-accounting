@@ -73,22 +73,16 @@ Edit the `services` array at the top of `client/src/pages/Services.jsx`.
 ### About page
 Edit `client/src/pages/About.jsx` directly. The firm bio, founder name, credentials, and values are all clearly marked as placeholders with comments.
 
-### Blog posts
-Add `.md` files to `client/src/content/posts/`. Each file must start with a frontmatter block:
+### Contact details & office map
+Phone, email, address and hours live in one place: the `CONTACT` object at the top of
+`client/src/components/ContactInfo.jsx`. The map is `client/src/components/OfficeMap.jsx`
+(currently a city-level Google Maps embed of Port Moody — swap the `MAP_QUERY` for a
+street address when available).
 
-```markdown
----
-title: Your Post Title
-date: 2025-06-24
-description: A one-sentence summary shown on the blog list page.
----
-
-Your markdown content here...
-```
-
-The URL slug comes from the filename: `my-post.md` → `/blog/my-post`.
-
-**Important:** Posts are loaded at build time by Vite. You must restart the Vite dev server (or rebuild) after adding or editing a post file.
+### Images
+The site uses `<ImagePlaceholder>` for photo slots (hero, office). Drop real files
+into `client/public/images/` and pass `src="/images/<file>"` — see
+`client/public/images/README.txt`.
 
 ---
 
@@ -122,23 +116,22 @@ To connect a real database later, replace the `fs.readFileSync` / `fs.writeFileS
 ├── package.json              ← root scripts: dev, build, start, install:all
 ├── client/
 │   ├── vite.config.js        ← Vite config + API proxy
-│   ├── tailwind.config.js
+│   ├── tailwind.config.js    ← brand colour palette
+│   ├── public/images/        ← drop real photos here (see README.txt)
 │   └── src/
 │       ├── App.jsx           ← React Router setup
 │       ├── components/
 │       │   ├── Navbar.jsx
-│       │   └── Footer.jsx
-│       ├── pages/
-│       │   ├── Home.jsx
-│       │   ├── Services.jsx
-│       │   ├── About.jsx
-│       │   ├── Contact.jsx
-│       │   ├── Blog.jsx
-│       │   └── BlogPost.jsx
-│       ├── utils/
-│       │   └── parsePosts.js ← markdown loader (Vite import.meta.glob)
-│       └── content/
-│           └── posts/        ← add .md files here for blog posts
+│       │   ├── Footer.jsx
+│       │   ├── Icon.jsx            ← dependency-free SVG icon set
+│       │   ├── ImagePlaceholder.jsx
+│       │   ├── ContactInfo.jsx     ← firm phone / email / address
+│       │   └── OfficeMap.jsx       ← Google Maps embed
+│       └── pages/
+│           ├── Home.jsx
+│           ├── Services.jsx
+│           ├── About.jsx
+│           └── Contact.jsx
 └── server/
     ├── index.js              ← Express app
     ├── .env                  ← PORT=3000

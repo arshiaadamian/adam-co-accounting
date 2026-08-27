@@ -1,80 +1,77 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import Logo from './Logo';
 
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/services', label: 'Services' },
   { to: '/about', label: 'About' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/contact', label: 'Contact' },
 ];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const desktopLink = ({ isActive }) =>
+    isActive
+      ? 'text-sand font-medium'
+      : 'text-mist hover:text-sand transition-colors';
+
   return (
-    <nav className="bg-blue-900 text-white shadow-md">
-      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-ink border-b border-hairline-dark">
+      <div className="container-page flex items-center justify-between h-16">
         {/* ── Firm name / logo ── */}
-        <Link to="/" className="text-xl font-bold tracking-wide hover:text-blue-200 transition-colors">
+        <Link to="/" className="flex items-center gap-2.5 text-lg font-medium text-sand">
+          <Logo className="shrink-0" size={28} />
           Adam&amp;Co Accounting
         </Link>
 
-        {/* ── Desktop nav links ── */}
-        <ul className="hidden md:flex gap-6 text-sm">
+        {/* ── Desktop nav ── */}
+        <nav className="hidden md:flex items-center gap-8 text-sm">
           {navLinks.map(link => (
-            <li key={link.to}>
-              <NavLink
-                to={link.to}
-                end={link.to === '/'}
-                className={({ isActive }) =>
-                  isActive
-                    ? 'font-semibold border-b-2 border-white pb-0.5'
-                    : 'hover:text-blue-200 transition-colors'
-                }
-              >
-                {link.label}
-              </NavLink>
-            </li>
+            <NavLink key={link.to} to={link.to} end={link.to === '/'} className={desktopLink}>
+              {link.label}
+            </NavLink>
           ))}
-        </ul>
+          <Link to="/contact" className="btn-primary !px-5 !py-2 text-sm">
+            Contact
+          </Link>
+        </nav>
 
-        {/* ── Mobile hamburger button ── */}
+        {/* ── Mobile hamburger ── */}
         <button
-          className="md:hidden p-1 focus:outline-none focus:ring-2 focus:ring-white rounded"
+          className="md:hidden p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-clay rounded"
           onClick={() => setMobileOpen(open => !open)}
           aria-label="Toggle navigation menu"
           aria-expanded={mobileOpen}
         >
           <div className="space-y-1.5">
-            <span className="block w-6 h-0.5 bg-white" />
-            <span className="block w-6 h-0.5 bg-white" />
-            <span className="block w-6 h-0.5 bg-white" />
+            <span className="block w-6 h-0.5 bg-sand" />
+            <span className="block w-6 h-0.5 bg-sand" />
+            <span className="block w-6 h-0.5 bg-sand" />
           </div>
         </button>
       </div>
 
-      {/* ── Mobile dropdown menu ── */}
+      {/* ── Mobile dropdown ── */}
       {mobileOpen && (
-        <ul className="md:hidden bg-blue-800 px-4 pb-4 space-y-1">
-          {navLinks.map(link => (
-            <li key={link.to}>
-              <NavLink
-                to={link.to}
-                end={link.to === '/'}
-                className={({ isActive }) =>
-                  `block py-2 text-sm ${
-                    isActive ? 'font-semibold text-white' : 'text-blue-100 hover:text-white'
-                  }`
-                }
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.label}
-              </NavLink>
-            </li>
+        <nav className="md:hidden border-t border-hairline-dark bg-graphite px-4 pb-4 pt-2 space-y-1">
+          {[...navLinks, { to: '/contact', label: 'Contact' }].map(link => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === '/'}
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                `block py-2 text-sm ${
+                  isActive ? 'font-medium text-sand' : 'text-mist hover:text-sand'
+                }`
+              }
+            >
+              {link.label}
+            </NavLink>
           ))}
-        </ul>
+        </nav>
       )}
-    </nav>
+    </header>
   );
 }

@@ -1,82 +1,156 @@
 import { Link } from 'react-router-dom';
+import Icon from '../components/Icon';
+import ImagePlaceholder from '../components/ImagePlaceholder';
 
-// PLACEHOLDER: Edit the copy in this file to match your firm's branding and messaging.
+// PLACEHOLDER: edit the copy in this file to match your firm's messaging.
 
-// Three feature cards shown below the hero section
+const stats = [
+  { value: '20+', label: 'Years in practice' },
+  { value: '300+', label: 'Clients served' },
+  { value: 'CPA', label: 'Designated & led' },
+];
+
 const highlights = [
   {
-    icon: '📊',
+    icon: 'chart',
     title: 'Accurate Reporting',
     body: 'Timely, precise financial statements you can rely on for decisions big and small.',
   },
   {
-    icon: '🤝',
+    icon: 'handshake',
     title: 'Personal Service',
-    body: 'You work directly with a dedicated accountant — not a call center. We know your name and your numbers.',
+    body: 'You work directly with a dedicated accountant — not a call centre. We know your name and your numbers.',
   },
   {
-    icon: '🔒',
+    icon: 'shield',
     title: 'Confidential & Secure',
     body: 'Your financial data is handled with the highest standards of security and discretion.',
   },
+];
+
+const servicePreview = [
+  { icon: 'calculator', title: 'Tax Preparation', body: 'Personal and corporate returns, filed accurately and on time.' },
+  { icon: 'book', title: 'Bookkeeping', body: 'Monthly or quarterly books kept clean and year-end ready.' },
+  { icon: 'briefcase', title: 'Financial Consulting', body: 'Guidance on cash flow, growth and business decisions.' },
 ];
 
 export default function Home() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="bg-gradient-to-br from-blue-900 to-blue-700 text-white py-24 px-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-          Financial Clarity.<br className="hidden md:block" /> Peace of Mind.
-        </h1>
-        <p className="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-          Adam&amp;Co Accounting helps small businesses and individuals navigate taxes,
-          bookkeeping, and financial planning — with expertise you can trust.
-        </p>
-        <Link
-          to="/contact"
-          className="inline-block bg-white text-blue-900 font-semibold px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors"
-        >
-          Get in Touch
-        </Link>
+      <section className="bg-ink border-b border-hairline-dark">
+        <div className="container-page section grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div>
+            <p className="eyebrow text-clay-light mb-4">Adam&amp;Co Accounting · Port Moody, BC</p>
+            <h1 className="text-4xl md:text-5xl leading-tight mb-5 text-sand">
+              Financial clarity.<br />Peace of mind.
+            </h1>
+            <p className="text-lg text-mist mb-8 leading-relaxed max-w-xl">
+              We help small businesses and individuals navigate taxes, bookkeeping,
+              and financial planning — with expertise you can trust.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/contact" className="btn-primary">Get in touch</Link>
+              <Link to="/services" className="btn-secondary">View services</Link>
+            </div>
+          </div>
+          <ImagePlaceholder
+            src="/images/hero.png"
+            alt="Calculator and pen on a financial statement"
+            label="Hero image"
+            aspect="4/3"
+          />
+        </div>
       </section>
 
-      {/* ── Short intro ── */}
-      <section className="max-w-3xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-2xl font-bold text-blue-900 mb-4">Why Choose Adam&amp;Co?</h2>
-        <p className="text-gray-600 leading-relaxed">
-          With over 20 years of experience serving clients across a wide range of industries,
-          our team brings precision, integrity, and personal attention to every engagement.
-          Whether you're a solo entrepreneur or a growing company, we tailor our services to fit your needs.
-        </p>
+      {/* ── Stat strip ── */}
+      <section className="container-page py-10">
+        <dl className="grid grid-cols-3 gap-6 text-center">
+          {stats.map(s => (
+            <div key={s.label}>
+              <dt className="text-3xl font-medium text-ink">{s.value}</dt>
+              <dd className="text-sm text-stone/70 mt-1">{s.label}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      {/* ── Feature highlights ── */}
-      <section className="bg-white py-12 px-4">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {highlights.map(item => (
-            <div
-              key={item.title}
-              className="text-center p-6 border border-gray-100 rounded-xl shadow-sm"
-            >
-              <div className="text-4xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">{item.title}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{item.body}</p>
+      {/* ── Why choose us ── */}
+      <section className="bg-paper border-y border-hairline">
+        <div className="container-page section">
+          <div className="max-w-2xl mb-12">
+            <p className="eyebrow mb-3">Why Adam&amp;Co</p>
+            <h2 className="text-3xl mb-4">A firm that treats your books like its own</h2>
+            <p className="text-stone leading-relaxed">
+              With over 20 years serving clients across a range of industries, we bring
+              precision, integrity, and personal attention to every engagement.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {highlights.map(item => (
+              <div key={item.title} className="card p-6">
+                <div className="grid place-items-center w-12 h-12 rounded-xl bg-sand border border-hairline text-stone mb-4">
+                  <Icon name={item.icon} className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-medium mb-2">{item.title}</h3>
+                <p className="text-sm text-stone leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Services preview ── */}
+      <section className="container-page section">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
+          <div className="max-w-xl">
+            <p className="eyebrow mb-3">What we do</p>
+            <h2 className="text-3xl">Services for every stage</h2>
+          </div>
+          <Link to="/services" className="text-clay font-medium hover:underline">
+            See all services →
+          </Link>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {servicePreview.map(s => (
+            <div key={s.title} className="card p-6">
+              <Icon name={s.icon} className="w-7 h-7 text-stone mb-4" />
+              <h3 className="text-lg font-medium mb-2">{s.title}</h3>
+              <p className="text-sm text-stone leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
       </section>
 
+      {/* ── About preview ── */}
+      <section className="bg-paper border-y border-hairline">
+        <div className="container-page section grid gap-12 lg:grid-cols-2 lg:items-center">
+          <ImagePlaceholder
+            src="/images/growth.png"
+            alt="Financial growth chart in a modern office"
+            label="Team / office"
+            aspect="4/5"
+          />
+          <div>
+            <p className="eyebrow mb-3">About the firm</p>
+            <h2 className="text-3xl mb-4">Local, independent, and here for the long term</h2>
+            <p className="text-stone leading-relaxed mb-6">
+              Adam&amp;Co Accounting was founded to bring the quality of a large firm to
+              small businesses and individuals who deserve the same level of care and
+              expertise. We build relationships rooted in trust and transparency.
+            </p>
+            <Link to="/about" className="btn-secondary">Learn more about us</Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA banner ── */}
-      <section className="py-16 px-4 text-center">
-        <h2 className="text-2xl font-bold text-blue-900 mb-4">Ready to get started?</h2>
-        <p className="text-gray-600 mb-6">Book a free 30-minute consultation with our team today.</p>
-        <Link
-          to="/contact"
-          className="inline-block bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors"
-        >
-          Contact Us
-        </Link>
+      <section className="bg-graphite text-mist">
+        <div className="container-page section text-center">
+          <h2 className="text-3xl text-sand mb-3">Ready to get started?</h2>
+          <p className="text-mist mb-8">Book a free 30-minute consultation with our team.</p>
+          <Link to="/contact" className="btn-on-dark">Contact us</Link>
+        </div>
       </section>
     </div>
   );
