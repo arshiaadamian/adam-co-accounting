@@ -1,39 +1,36 @@
 # Adam&Co Accounting — Website
 
-A clean, professional website for an accounting firm. Built with **React + Vite + Tailwind CSS** on the frontend and **Node.js + Express** on the backend.
+A clean, professional marketing site for an accounting firm. **Static single-page
+app** built with **React + Vite + Tailwind CSS**. No backend — the contact form
+uses **Netlify Forms**, and the whole site deploys to Netlify as plain files.
 
 ---
 
-## Running Locally (Dev Mode)
+## Running Locally
 
 ### Prerequisites
 - Node.js v18 or higher
 - npm v9 or higher
 
-### 1. Install all dependencies
-
-Run this once from the project root:
+### 1. Install dependencies
 
 ```bash
 npm run install:all
 ```
 
-This installs dependencies for the root workspace, the `client/`, and the `server/`.
+(Runs `npm install` inside `client/`. You can also just `cd client && npm install`.)
 
-### 2. Start the dev servers
+### 2. Start the dev server
 
 ```bash
 npm run dev
 ```
 
-This runs two processes concurrently:
+Vite serves the site at **http://localhost:5173** with hot reloading.
 
-| Process | URL | What it does |
-|---|---|---|
-| Vite (React) | http://localhost:5173 | Hot-reloading frontend |
-| Express (API) | http://localhost:3000 | Contact form endpoint |
-
-Vite automatically proxies any `/api/*` request to the Express server, so you never deal with CORS in development.
+> The contact form only records submissions once deployed to Netlify — locally the
+> POST to `/` has nowhere to go, so you'll see the error banner. Everything else
+> works offline.
 
 ---
 
@@ -43,22 +40,62 @@ Vite automatically proxies any `/api/*` request to the Express server, so you ne
 npm run build
 ```
 
-This compiles the React app into `client/dist/`.
+Compiles the site into **`client/dist/`** — static HTML, CSS and JS ready to upload
+anywhere. Preview the production build with `npm run preview --prefix client`.
 
-### Start in production mode
+---
 
-```bash
-npm start
+## Deploying to Netlify
+
+The repo is already set up for it.
+
+In the Netlify UI (or a `netlify.toml`), set:
+
+| Setting | Value |
+|---|---|
+| Base directory | `client` |
+| Build command | `npm run build` |
+| Publish directory | `client/dist` (`dist` if base is `client`) |
+
+Set `NODE_VERSION` to `18` or newer in the Netlify environment variables.
+
+**SPA routing** — `client/public/_redirects` contains:
+
+```
+/*    /index.html   200
 ```
 
-Express serves both the compiled React app **and** the API from a single process at http://localhost:3000.
+so `/about`, `/services`, `/contact` resolve on direct load and refresh.
+
+---
+
+## Contact Form (Netlify Forms)
+
+Because the form is rendered by React, Netlify can't see it in the built HTML, so
+detection is handled in two places:
+
+1. **`client/index.html`** has a hidden static `<form name="contact" data-netlify="true"
+   netlify-honeypot="bot-field">` with the same fields. Netlify scans this at build
+   time and registers the form.
+2. **`client/src/pages/Contact.jsx`** renders the real form and submits it with
+   `fetch('/', …)` as `application/x-www-form-urlencoded`, including `form-name=contact`.
+
+Keep the field names (`name`, `email`, `message`, `bot-field`) identical in both files.
+
+- Submissions appear under **Forms** in the Netlify dashboard. Add notification
+  emails there (Site configuration → Forms → Form notifications).
+- `bot-field` is a honeypot — hidden from people, filled by bots, filtered by Netlify.
+- The form shows a note asking people not to send SIN, bank/account numbers, or tax
+  documents.
+- Loading / success / error states and the green/red banners are handled in
+  `Contact.jsx`.
 
 ---
 
 ## Where to Edit Placeholder Content
 
 ### Firm name & branding
-Search the project for `Adam&Co Accounting` and replace it everywhere. The main spots:
+Search the project for `Adam&Co Accounting` and replace it. Main spots:
 
 | File | What to change |
 |---|---|
@@ -71,41 +108,23 @@ Search the project for `Adam&Co Accounting` and replace it everywhere. The main 
 Edit the `services` array at the top of `client/src/pages/Services.jsx`.
 
 ### About page
-Edit `client/src/pages/About.jsx` directly. The firm bio, founder name, credentials, and values are all clearly marked as placeholders with comments.
+Edit `client/src/pages/About.jsx` directly. Firm bio, founder name, and values are
+marked as placeholders with comments.
 
 ### Contact details & office map
-Phone, email, address and hours live in one place: the `CONTACT` object at the top of
+Phone, email, address and hours live in the `CONTACT` object at the top of
 `client/src/components/ContactInfo.jsx`. The map is `client/src/components/OfficeMap.jsx`
-(currently a city-level Google Maps embed of Port Moody — swap the `MAP_QUERY` for a
-street address when available).
+(a city-level Google Maps embed of Port Moody — swap `MAP_QUERY` for a street
+address when available).
+
+### Colours & fonts
+The brand palette is defined once in `client/tailwind.config.js`. Headings use
+Fraunces (loaded from Google Fonts in `client/index.html`); body uses the system sans.
 
 ### Images
-The site uses `<ImagePlaceholder>` for photo slots (hero, office). Drop real files
-into `client/public/images/` and pass `src="/images/<file>"` — see
-`client/public/images/README.txt`.
-
----
-
-## Where Contact Form Submissions Are Saved
-
-Every successful contact form submission is appended to:
-
-```
-server/data/submissions.json
-```
-
-Each entry looks like:
-
-```json
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "message": "I'd like to schedule a consultation.",
-  "submittedAt": "2025-06-24T14:30:00.000Z"
-}
-```
-
-To connect a real database later, replace the `fs.readFileSync` / `fs.writeFileSync` block in `server/index.js` (clearly commented) with your database insert logic.
+Photo slots use `<ImagePlaceholder>`. Drop files into `client/public/images/` and
+pass `src="/images/<file>"` — see `client/public/images/README.txt`. Files present:
+`hero.png`, `team.png`, `office.png`, plus `favicon.svg`.
 
 ---
 
@@ -113,44 +132,29 @@ To connect a real database later, replace the `fs.readFileSync` / `fs.writeFileS
 
 ```
 /
-├── package.json              ← root scripts: dev, build, start, install:all
+├── package.json              ← thin wrapper: dev / build / install → client
 ├── client/
-│   ├── vite.config.js        ← Vite config + API proxy
+│   ├── vite.config.js
 │   ├── tailwind.config.js    ← brand colour palette
-│   ├── public/images/        ← drop real photos here (see README.txt)
+│   ├── index.html            ← <title>, meta, fonts, favicon, hidden Netlify form
+│   ├── public/
+│   │   ├── _redirects        ← Netlify SPA fallback
+│   │   └── images/           ← site photos + favicon.svg
 │   └── src/
 │       ├── App.jsx           ← React Router setup
 │       ├── components/
 │       │   ├── Navbar.jsx
 │       │   ├── Footer.jsx
-│       │   ├── Icon.jsx            ← dependency-free SVG icon set
+│       │   ├── Logo.jsx
+│       │   ├── Icon.jsx            ← lucide-react icon wrapper
 │       │   ├── ImagePlaceholder.jsx
 │       │   ├── ContactInfo.jsx     ← firm phone / email / address
-│       │   └── OfficeMap.jsx       ← Google Maps embed
+│       │   ├── OfficeMap.jsx       ← Google Maps embed
+│       │   └── ScrollToTop.jsx
 │       └── pages/
 │           ├── Home.jsx
 │           ├── Services.jsx
 │           ├── About.jsx
-│           └── Contact.jsx
-└── server/
-    ├── index.js              ← Express app
-    ├── .env                  ← PORT=3000
-    └── data/
-        └── submissions.json  ← contact form submissions
-```
-
-## Changing the Server Port
-
-Edit `server/.env`:
-
-```
-PORT=4000
-```
-
-Then update the proxy in `client/vite.config.js` to match:
-
-```js
-proxy: {
-  '/api': 'http://localhost:4000',
-}
+│           └── Contact.jsx    ← Netlify Forms submission
+└── (no server — the site is fully static)
 ```

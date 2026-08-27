@@ -126,7 +126,7 @@ export default function Home() {
       <section className="bg-paper border-y border-hairline">
         <div className="container-page section grid gap-12 lg:grid-cols-2 lg:items-center">
           <ImagePlaceholder
-            src="/images/growth.png"
+            src="/images/team.png"
             alt="Financial growth chart in a modern office"
             label="Team / office"
             aspect="4/5"

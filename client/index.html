@@ -17,6 +17,18 @@
     <title>Adam&amp;Co Accounting</title>
   </head>
   <body>
+    <!--
+      Static copy of the contact form so Netlify detects it at build time.
+      The interactive form is rendered by React in src/pages/Contact.jsx —
+      keep the field names identical to this one.
+    -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" />
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

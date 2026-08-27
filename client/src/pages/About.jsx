@@ -24,7 +24,7 @@ export default function About() {
       {/* ── Firm overview ── */}
       <section className="container-page section grid gap-12 lg:grid-cols-2 lg:items-center">
         <ImagePlaceholder
-          src="/images/notes.png"
+          src="/images/office.png"
           alt="Handwritten accounting worksheet with a calculator"
           label="Office photo"
           aspect="4/5"

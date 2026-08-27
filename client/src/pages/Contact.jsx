@@ -2,8 +2,16 @@ import { useState } from 'react';
 import ContactInfo from '../components/ContactInfo';
 import OfficeMap from '../components/OfficeMap';
 
+// Encode a plain object as application/x-www-form-urlencoded, which is what
+// Netlify's form handler expects.
+function encode(data) {
+  return Object.keys(data)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+    .join('&');
+}
+
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', message: '', 'bot-field': '' });
   // status: null | 'loading' | 'success' | 'error'
   const [status, setStatus] = useState(null);
 
@@ -16,20 +24,22 @@ export default function Contact() {
     setStatus('loading');
 
     try {
-      const res = await fetch('/api/contact', {
+      // Netlify captures any POST whose body carries a matching "form-name".
+      // The submission is recorded before the SPA redirect runs.
+      const res = await fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode({ 'form-name': 'contact', ...form }),
       });
 
       if (res.ok) {
         setStatus('success');
-        setForm({ name: '', email: '', message: '' });
+        setForm({ name: '', email: '', message: '', 'bot-field': '' });
       } else {
         setStatus('error');
       }
     } catch {
-      // Network error (e.g. server not running)
+      // Network or unexpected error
       setStatus('error');
     }
   }
@@ -64,7 +74,34 @@ export default function Contact() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          {/*
+            Netlify Forms. The real form is rendered by React, so a matching
+            static copy lives in client/index.html for Netlify's build-time
+            form detection. Keep the field names in sync across both.
+          */}
+          <form
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            onSubmit={handleSubmit}
+            className="space-y-5"
+          >
+            <input type="hidden" name="form-name" value="contact" />
+            {/* Honeypot: hidden from people, bots fill it and get filtered out */}
+            <p className="hidden">
+              <label>
+                Don't fill this out if you're human:
+                <input
+                  name="bot-field"
+                  value={form['bot-field']}
+                  onChange={handleChange}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </label>
+            </p>
+
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-ink mb-1">Name</label>
               <input
@@ -91,6 +128,12 @@ export default function Contact() {
               {status === 'loading' ? 'Sending…' : 'Send message'}
             </button>
           </form>
+
+          <p className="mt-4 text-sm text-stone/80">
+            Please don't send your SIN, bank or account numbers, or tax documents
+            through this form. Once we're in touch we'll share a secure way to
+            send sensitive information.
+          </p>
         </div>
 
         {/* ── Details + map ── */}

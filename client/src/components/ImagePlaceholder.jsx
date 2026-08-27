@@ -2,8 +2,8 @@
 //
 // While you don't have a real photo yet, this renders a labelled dashed box so
 // the layout is complete. When you're ready:
-//   1. Put the image file in  client/public/images/  (e.g. hero.jpg)
-//   2. Pass its path:  <ImagePlaceholder src="/images/hero.jpg" alt="..." />
+//   1. Put the image file in  client/public/images/  (e.g. hero.png)
+//   2. Pass its path:  <ImagePlaceholder src="/images/hero.png" alt="..." />
 //
 // Props:
 //   src       - image URL; when omitted the placeholder box is shown
